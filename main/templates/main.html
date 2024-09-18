@@ -1,8 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
 <h1>Words of Affir-MACHINE: A Project</h1>
 
 <h5>App: </h5>
 <p>{{ app }}</p>
+
 <h5>Name: </h5>
 <p>{{ name }}</p>
+
 <h5>Class: </h5>
 <p>{{ class }}</p>
+
+{% if not products %}
+<p>Belum ada data produk pada Words of Affir-MACHINE.</p>
+{% else %}
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Description</th>
+  </tr>
+
+  {% comment %} Berikut cara memperlihatkan data product di bawah baris ini 
+  {% endcomment %} 
+  {% for product in products %}
+  <tr>
+    <td>{{product.name}}</td>
+    <td>{{product.price}}</td>
+    <td>{{product.description}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<br />
+
+<a href="{% url 'main:create_product' %}">
+  <button>Add New Product</button>
+</a>
+{% endblock content %}
