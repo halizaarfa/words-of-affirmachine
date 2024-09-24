@@ -55,10 +55,14 @@ Method ```is_valid()``` memastikan bahwa semua field pada form Django telah teri
 
 ## Screenshot hasil masing-masing URL pada Postman
 1. http://localhost:8000/xml/
-![alt text](image-2.png)
+![xml](https://github.com/user-attachments/assets/e879337f-4779-4dc0-bb2c-a0e764620aed)
+
 2. http://localhost:8000/json/
-![alt text](image-1.png)
+![json](https://github.com/user-attachments/assets/cfa5ff69-8c6e-4157-969c-a1e7b8ea6321)
+
 3. http://localhost:8000/xml/1651819f-8dc7-4011-9160-9d49c4225117
-![alt text](image-3.png)
+![json-id](https://github.com/user-attachments/assets/93cdc49d-a397-402c-984d-e09318641434)
+
 4. http://localhost:8000/json/686d6f5b-7c92-4ead-ae65-a9bfbb0f2fa6
-![alt text](image-5.png)
+![xml-id](https://github.com/user-attachments/assets/ebaea87f-a9c7-4da0-9030-aebcc3a0b820)
+
