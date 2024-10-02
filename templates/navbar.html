@@ -16,7 +16,7 @@
           <a href="/" class="text-center  hover:bg-rose-300 text-rose-900 font-bold py-2 px-4 rounded transition duration-300 mr-2">
             Favs
           </a>
-          <a href="{% url 'main:logout' %}" class="text-center  hover:bg-rose-300 text-rose-900 font-bold py-2 px-4 rounded transition duration-300 mr-2">
+          <a href="{% url 'main:logout' %}" class="block text-center bg-rose-500 hover:bg-rose-300 text-white font-bold py-2 px-4 rounded transition duration-300 mr-2">
             Logout
           </a>
         {% else %}
@@ -53,7 +53,7 @@
           Favs
         </a>
       </div>
-        <a href="{% url 'main:logout' %}" class="block text-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+        <a href="{% url 'main:logout' %}" class="block text-center bg-rose-500 hover:bg-rose-300 text-white font-bold py-2 px-4 rounded transition duration-300">
           Logout
         </a>
       {% else %}

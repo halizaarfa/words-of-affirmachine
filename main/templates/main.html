@@ -11,7 +11,7 @@
   <div>
   <div class="p-2 mb-6 relative">
     <div class="bg-rose-50 shadow-lg flex flex-col justify-center items-center rounded-xl pb-10">
-      <h1 class="text-3xl font-extrabold text-rose-900 pt-12 ">Welcome, {{name}}!</h1>
+      <h1 class="text-3xl font-extrabold text-rose-900 pt-12 ">Welcome, <span style="font-family: 'Playwrite NO', cursive;">{{name}}!</span></h1>
       <span class="text-rose-900 text-lg pb-7">you are:</span>
       <div class="grid grid-cols-1 z-30 md:grid-cols-2 gap-6 mb-4">
         {% include "card_info.html" with title='Name' value=name %}
