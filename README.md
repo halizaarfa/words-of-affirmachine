@@ -96,3 +96,42 @@ Tidak semua cookies aman digunakan. Cookies sebetulnya tidak bisa bertindak seba
 3. **Menghubungkan model Product dengan User**: Pada class Product yang ada di ```models.py```, ditambahkan atribut ```user = models.ForeignKey(User, on_delete=models.CASCADE)```. Selanjutnya, variabel ```products``` pada ```views.py``` diubah dari menampilkan all objects menjadi terfilter berdasarkan user yang sedang login, ```products = Product.objects.filter(user=request.user)```.
 
 4. **Menampilkan detail informasi pengguna yang sedang logged in seperti username dan menerapkan cookies seperti last login pada halaman utama aplikasi**: Pada ```views.py```, ```name``` pada dictionary ```context``` diubah value-nya menjadi ```request.user.username```. Dengan ini, informasi nama tidak lagi dalam bentuk statis, melainkan bergantung pada user yang sedang login. Selanjutnya, dilakukan import datetime, HttpResponseRedirect, serta reverse untuk membuat cookie ```last_login```. Kode pada blok ```if form.is_valid()``` diisi dengan kode pembuatan cookie, pada dictionary ```context``` juga ditambahkan key ```last_login``` dengan value ```request.COOKIES['last_login']```. Terakhir, tambahkan ```last_login``` pada berkas ```main.html``` untuk menampilkannya pada laman.
+
+---
+
+# Tugas 5: Desain Web menggunakan HTML, CSS dan Framework CSS
+## Urutan prioritas pengambilan jika terdapat beberapa CSS selector untuk suatu elemen HTML
+Urutan prioritas dari yang paling tinggi untuk pengambilan adalah sebagai berikut.
+
+1. **Inline Styles**: style yang diimplementasikan langsung dalam HTML sehingga prioritasnya paling tinggi
+
+2. **ID**: selector yang menggunakan ID berupa ```#id```
+
+3. **Classes, Pseudo-classes, dan Attributes**: selector yang menggunakan class (```.class```), pseudo-class (```:hover```), serta selector atribut (```[type="text"]```)
+
+4. **Element Type**: selector yang hanya menggunakan nama dari elemen HTML
+
+5. **Universal**: terakhir, yakni selector yang diperuntukkan untuk semua elemen (tidak spesifik)
+
+## Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+Responsive design sangat penting, baik dari sisi user maupun pembuat web. Ketika responsive design tidak diterapkan, perubahan yang tidak optimal dari desktop ke mobile (atau sebaliknya) akan sangat menyulitkan untuk digunakan atau dilakukan maintenance. Dengan responsive design, hanya dibutuhkan satu web untuk bermacam-macam device sehingga memotong cost sekaligus memudahkan user.
+
+Contoh perbandingan yang paling dapat terlihat dari segi responsive design adalah SCELE dan SIAK. SCELE sudah menerapkan responsive design dan menyesuaikan elemen-elemennya, seluruh teks dapat terbaca dengan baik pada mobile web. Sebaliknya, dari laman login pun, SIAK belum menerapkan responsive design dan seluruh teks yang ada pada setiap bagian web sangat kecil dan menyakitkan mata.
+
+## Perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut
+1. **Margin**: space atau jarak yang mengelilingi suatu elemen. Margin digunakan untuk menentukan seberapa jauh suatu elemen dengan elemen lainnya. Margin juga dapat diimplementasikan untuk memindahkan posisi elemen pada laman.
+
+2. **Border**: suatu layer yang berada di antara margin dengan padding. Default dari border adalah memiliki ketebalan 0, alias tidak terlihat. Implementasi border adalah meng-highlight kotak atau elemen dan memisahkan dari background sekelilingnya.
+
+3. **Padding**: jarak antara border dari suatu elemen dengan konten atau isinya. Fungsi padding adalah memberikan whitespace dalam elemen, umumnya meningkatkan readability dari elemen tersebut.
+
+
+## Konsep flex box dan grid layout beserta kegunaannya
+**Flex box**  merupakan layout satu dimensi, yakni satu kolom atau satu baris. Umumnya digunakan untuk memposisikan elemen-elemen kecil atau detail. Dengan flex box, elemen-elemen tersebut dapat tersusun secara rapi dengan space yang konsisten.
+
+**Grid layout** berbasis dua dimensi, dengan sistem layout baris dan kolom. Umumnya digunakan untuk elemen-elemen yang cenderung besar. Penggunaan grid layout mempermudah memposisikan elemen-elemen tanpa harus menjadikannya float atau mengatur posisi pastinya. 
+
+## Implementasi checklist step-by-step
+1. **Implementasikan fungsi untuk menghapus dan mengedit product**: Pada ```views.py```, dibuat fungsi baru bernama ```edit_product``` dan ```delete_product``` yang masing-masing menerima parameter ```request``` dan ```id```. Dengan kedua parameter ini, produk yang diedit/dihapus hanyalah yang diinginkan. Selanjutnya, tambahkan fungsi ke ```urls.py```, serta buat template-nya HTML-nya. Tambahkan juga pada ```main.html``` sehingga button edit/delete bisa diakses dan mengarah ke fungsi terkait.
+
+2. **Kustomisasi desain pada template HTML yang telah dibuat**: Framework yang saya gunakan adalah Tailwind. Dengan bantuan tutorial sebelumnya sebagai template, saya mengubah beberapa hal seperti tampilan, warna, font, serta posisi button. Kustomisasi ini dilakukan dengan mengedit masing-masing file HTML yang ada pada ```templates``` serta ```main\templates```.
