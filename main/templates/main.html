@@ -3,7 +3,7 @@
 
 {% block meta %}
 <title>Words of Affir-MACHINE</title>
-
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
 {% endblock meta %}
 {% block content %}
 {% include 'navbar.html' %}
@@ -31,27 +31,202 @@
     </div>
 </div>
     <div class="flex justify-center mb-6">
-        <a href="{% url 'main:create_product' %}" class="bg-rose-200 hover:bg-rose-300 text-rose-900 font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mt-4">
+        <a href="{% url 'main:create_product' %}" class="bg-rose-200 hover:bg-rose-300 text-rose-900 font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mt-4 mr-4">
             add another?
         </a>
+        <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-rose-200 hover:bg-rose-300 text-rose-900 font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mt-4" onclick="showModal();">
+            add another but ajax :D
+        </button>
     </div>
     
-    {% if not products %}
-    <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
-        <div class="tenor-gif-embed" data-postid="22090584" data-share-method="host" data-aspect-ratio="1.5" data-width="300px">
-          <a href="https://tenor.com/view/younghoon-kim-theboyz-kpop-kpopcry-gif-22090584">Younghoon Kim GIF</a> from 
-          <a href="https://tenor.com/search/younghoon-gifs">Younghoon Menangis</a>
-        </div>
-        <script type="text/javascript" async src="https://tenor.com/embed.js"></script>        
-        <p class="text-center text-gray-600 mt-4">belum ada product :(</p>
-    </div>
-    {% else %}
-    <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full">
-        {% for product in products %}
-            {% include 'card_product.html' with product=product %}
-        {% endfor %}
-    </div>
-    {% endif %}
-    
+    <div id="product_cards"></div>    
 </div>
+
+<div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+  <div id="crudModalContent" class="relative bg-white shadow-md rounded-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
+    <!-- Modal header -->
+    <div class="flex items-center justify-between p-4 border-b rounded-t">
+      <h3 class="text-xl font-semibold text-rose-900">
+        add new product!
+      </h3>
+      <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn">
+        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>
+        <span class="sr-only">Close modal</span>
+      </button>
+    </div>
+    <!-- Modal body -->
+    <div class="px-6 py-4 space-y-6 form-style">
+      <form id="productForm" class="space-y-6">
+        <div class="mb-4">
+          <label for="product_name" class="block text-sm font-medium text-gray-700">the name</label>
+          <input type="text" id="product_name" name="product_name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-rose-400" placeholder="what is it called?" required>
+        </div>
+        <div class="mb-4">
+          <label for="product_description" class="block text-sm font-medium text-gray-700">describe it!</label>
+          <textarea id="product_description" name="product_description" rows="3" class="mt-1 block w-full h-32 resize-none border border-gray-300 rounded-md p-2 hover:border-rose-400" placeholder="this is a ..." required></textarea>
+        </div>
+        <div class="mb-4">
+          <label for="product_price" class="block text-sm font-medium text-gray-700">for how much?</label>
+          <input type="number" id="product_price" name="product_price" min="0" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-rose-400" placeholder="price is in idr" required>
+        </div>
+        <div class="mb-4">
+          <label for="product_stars" class="block text-sm font-medium text-gray-700">☆☆☆</label>
+          <input type="number" id="product_stars" name="product_stars" min="1" max="5" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-rose-400" placeholder="up to 5 stars~" required>
+        </div>
+      </form>
+    </div>
+    <!-- Modal footer -->
+    <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
+      <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">cancel</button>
+      <button type="submit" id="submitProduct" form="productForm" class="bg-rose-200 hover:bg-rose-300 text-rose-900 font-bold py-2 px-4 rounded-lg">save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function getProducts(){
+      return fetch("{% url 'main:show_json' %}").then((res) => res.json())
+  }
+    
+  async function refreshProducts() {
+      document.getElementById("product_cards").innerHTML = "";
+      document.getElementById("product_cards").className = "";
+      const products = await getProducts();
+      let htmlString = "";
+      let classNameString = "";
+
+      if (products.length === 0) {
+          classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
+          htmlString = `
+              <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+                <img src="{% static 'image/sedih-banget.gif' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
+                <p class="text-center text-gray-600 mt-4">no product yet :(</p>
+              </div>
+          `;
+      }
+      else {
+          classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full";
+          
+          products.forEach((item) => {
+              const name = DOMPurify.sanitize(item.fields.name);
+              const description = DOMPurify.sanitize(item.fields.description);
+
+              htmlString += `
+              <div class="relative break-inside-avoid">
+                  <!-- Card Container -->
+                  <div class="relative top-5 bg-white-200 shadow-md rounded-lg mb-6 break-inside-avoid flex flex-col border-2 border-rose-300 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                      
+                      <!-- Card Header with Product Info -->
+                      <div class="bg-rose-200 text-gray-800 p-4 rounded-t-lg border-b-2 border-rose-300">
+                          <h3 class="font-bold text-xl mb-2" style="font-family: 'Playwrite NO', cursive;">${name}</h3> 
+                          <p class="text-gray-600">${description}</p>
+                      </div>
+                      
+                      <!-- Card Body with Price and Rating -->
+                      <div class="p-4 flex justify-between items-center">
+                          <!-- Price Section (Left) -->
+                          <div class="flex items-center">
+                              <p class="font-semibold text-lg mb-2 mr-2 text-gray-700">Price</p>
+                              <p class="text-gray-700 mb-2">
+                                  <span class="bg-[linear-gradient(to_bottom,transparent_0%,transparent_calc(100%_-_1px),#ffc1da_calc(100%_-_1px))] bg-[length:100%_1.5rem] pb-1">IDR ${item.fields.price}</span>
+                              </p>
+                          </div>
+
+                          <!-- Rating Section (Right) -->
+                          <div class="flex items-center">
+                              <p class="font-semibold text-lg mb-2 mr-2 text-gray-700">Stars</p>
+                              <div class="flex">`;
+
+              // Dynamically add stars based on product rating
+              for (let i = 1; i <= 5; i++) {
+                  if (i <= item.fields.stars) {
+                      htmlString += `
+                      <!-- Filled Star -->
+                      <svg class="h-6 w-6 text-rose-500 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674h4.905c.969 0 1.371 1.24.588 1.81l-3.97 2.883 1.518 4.674c.3.921-.755 1.688-1.538 1.118l-3.97-2.882-3.97 2.882c-.783.57-1.838-.197-1.538-1.118l1.518-4.674-3.97-2.883c-.783-.57-.38-1.81.588-1.81h4.905L9.05 2.927z" />
+                      </svg>`;
+                  } else {
+                      htmlString += `
+                      <!-- Hollow Star -->
+                      <svg class="h-6 w-6 text-gray-400 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.518 4.674h4.905c.969 0 1.371 1.24.588 1.81l-3.97 2.883 1.518 4.674c.3.921-.755 1.688-1.538 1.118l-3.97-2.882-3.97 2.882c-.783.57-1.838-.197-1.538-1.118l1.518-4.674-3.97-2.883c-.783-.57-.38-1.81.588-1.81h4.905L9.05 2.927z" />
+                      </svg>`;
+                  }
+              }
+
+              htmlString += `
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- Edit and Delete buttons -->
+                      <div class="flex justify-between p-4 border-t-2 border-rose-300">
+                          <a href="/edit-product/${item.pk}" class="bg-rose-400 hover:bg-rose-700 text-white rounded-lg px-4 py-2 transition duration-300 shadow-md">
+                              edit this
+                          </a>
+                          <a href="/delete/${item.pk}" class="bg-rose-500 hover:bg-rose-700 text-white rounded-lg px-4 py-2 transition duration-300 shadow-md">
+                              delete this
+                          </a>
+                      </div>
+                  </div>
+              </div>`;
+          });
+      }
+
+      document.getElementById("product_cards").className = classNameString;
+      document.getElementById("product_cards").innerHTML = htmlString;
+  }
+  refreshProducts();
+
+  const modal = document.getElementById('crudModal');
+  const modalContent = document.getElementById('crudModalContent');
+
+  function showModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modal.classList.remove('hidden'); 
+      setTimeout(() => {
+        modalContent.classList.remove('opacity-0', 'scale-95');
+        modalContent.classList.add('opacity-100', 'scale-100');
+      }, 50); 
+  }
+
+  function hideModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modalContent.classList.remove('opacity-100', 'scale-100');
+      modalContent.classList.add('opacity-0', 'scale-95');
+
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 150); 
+  }
+
+  document.getElementById("cancelButton").addEventListener("click", hideModal);
+  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+
+  function addProduct() {
+    fetch("{% url 'main:create_product_ajax' %}", {
+      method: "POST",
+      body: new FormData(document.querySelector('#productForm')),
+    })
+    .then(response => refreshProducts())
+
+    document.getElementById("productForm").reset(); 
+    document.querySelector("[data-modal-toggle='crudModal']").click();
+
+    return false;
+  }
+
+  document.getElementById("productForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    addProduct();
+  })
+
+</script>
+
 {% endblock content %}
