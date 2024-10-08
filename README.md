@@ -135,3 +135,43 @@ Contoh perbandingan yang paling dapat terlihat dari segi responsive design adala
 1. **Implementasikan fungsi untuk menghapus dan mengedit product**: Pada ```views.py```, dibuat fungsi baru bernama ```edit_product``` dan ```delete_product``` yang masing-masing menerima parameter ```request``` dan ```id```. Dengan kedua parameter ini, produk yang diedit/dihapus hanyalah yang diinginkan. Selanjutnya, tambahkan fungsi ke ```urls.py```, serta buat template-nya HTML-nya. Tambahkan juga pada ```main.html``` sehingga button edit/delete bisa diakses dan mengarah ke fungsi terkait.
 
 2. **Kustomisasi desain pada template HTML yang telah dibuat**: Framework yang saya gunakan adalah Tailwind. Dengan bantuan tutorial sebelumnya sebagai template, saya mengubah beberapa hal seperti tampilan, warna, font, serta posisi button. Kustomisasi ini dilakukan dengan mengedit masing-masing file HTML yang ada pada ```templates``` serta ```main\templates```.
+
+---
+
+# Tugas 6: JavaScript dan AJAX
+## Manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web
+Beberapa manfaat penggunaan JavaScript adalah sebagai berikut.
+- Interaktivitas yang dinamis: pada web, bisa ditambahkan animasi, _visual effects_, serta validasi form secara dinamis tanpa perlu me-_reload_ laman.
+- Single-page application: navigasi dapat dilakukan tanpa perlu berpindah halaman, konten pun dapat terupdate secara _real-time_ dengan AJAX.
+- Data diolah di Browser: pengolahan form dapat dilakukan di browser sehingga beban pada server berkurang serta kecepatan aplikasi meningkat.
+
+## Fungsi dari penggunaan ```await``` ketika kita menggunakan ```fetch()```! Apa yang akan terjadi jika kita tidak menggunakan ```await```?
+```await``` berfungsi untuk menunggu hasil dari operasi yang berlangsung secara _asynchronous_ sebelum berlanjut ke baris kode berikutnya. Ketika ```fetch()``` digunakan untuk mengambil data dari server, proses akan memakan waktu. Dengan ```await```, kode berikutnya akan dieksekusi setelah proses ```fetch()``` selesai. Jika tidak digunakan dan langsung berlanjut ke baris berikutnya, data dari ```fetch()``` belum didapat karena fungsi belum selesai sehingga dapat menyebabkan error atau _miss_.
+
+## Mengapa kita perlu menggunakan decorator ```csrf_exempt``` pada view yang akan digunakan untuk AJAX POST?
+Decorator ```csrf_exempt``` digunakan untuk menonaktifkan proteksi CSRF (Cross-Site Request Forgery). Hal ini diperlukan ketika request AJAX POST dikirim dari sumber eksternal yang tidak dapat menyediakan token CSRF. Karena secara _default_ proteksi CSRF ini aktif,  decorator ```csrf_exempt``` ditambahkan sehingga request AJAX POST dapat terkirim.
+
+## Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?
+Dari segi frontend, data yang masuk dapat dimanipulasi atau diubah secara manual. Validasi pada frontend dapat dengan sangat mudah dilewati. Sebaliknya, ketika pembersihan dilakukan di backend, validasi sepenuhnya ada pada kode yang dijalankan dan data yang disimpan di database dipastikan sudah tersanitasi.
+
+## Implementasi checklist step-by-step
+### AJAX GET
+1. **Ubahlah kode cards data mood agar dapat mendukung AJAX GET**: Kode pada ```main.html``` diubah menjadi cards yang menggunakan modal serta mendukung JavaScript.
+
+2. **Lakukan pengambilan data mood menggunakan AJAX GET. Pastikan bahwa data yang diambil hanyalah data milik pengguna yang logged-in**: Pada ```main.html```, dibuat script dengan JavaScript yang berisi function untuk melakukan GET request. Request ini difilter bergantung pada pengguna yang logged-in.
+
+### AJAX POST
+1. **Buatlah sebuah tombol yang membuka sebuah modal dengan form untuk menambahkan mood**: Pada ```main.html```, dibuat tombol yang membuka modal dengan onclick mengarah ke fungsi ```showModal()```
+
+2. **Buatlah fungsi view baru untuk menambahkan mood baru ke dalam basis data**: Pada ```views.py```, dibuat fungsi ```create_ajax``` dengan parameter request. Method POST diimplementasikan pada data yang telah di-strip.
+
+3. **Buatlah path /create-ajax/ yang mengarah ke fungsi view yang baru kamu buat**: Pada ```urls.py```, ditambahkan path /create-ajax/ yang mengarah ke fungsi ```create_ajax``` yang telah dibuat pada poin 2. 
+
+4. **Hubungkan form yang telah kamu buat di dalam modal kamu ke path /create-ajax/**: Pada fungsi ```addProduct()```, kode berikut ditambahkan.
+```
+fetch("{% url 'main:create_ajax' %}", {
+      method: "POST",
+      body: new FormData(document.querySelector('#productForm')),
+    })
+```
+5. **Lakukan refresh pada halaman utama secara asinkronus untuk menampilkan daftar mood terbaru tanpa reload halaman utama secara keseluruhan**: Pada ```main.html``` dibuat fungsi ```refreshProducts()``` yang me-refresh halaman. Fungsi ini ditambahkan ke response ```addProduct()``` sehingga setiap kali tombol submit ditekan, halaman di-refresh secara asinkronus

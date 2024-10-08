@@ -44,7 +44,7 @@ def create_product(request):
 
 @csrf_exempt
 @require_POST
-def create_product_ajax(request):
+def create_ajax(request):
     name = strip_tags(request.POST.get("name"))
     price = request.POST.get("price")
     description = strip_tags(request.POST.get("description"))

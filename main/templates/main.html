@@ -210,11 +210,11 @@
   document.getElementById("closeModalBtn").addEventListener("click", hideModal);
 
   function addProduct() {
-    fetch("{% url 'main:create_product_ajax' %}", {
+    fetch("{% url 'main:create_ajax' %}", {
       method: "POST",
       body: new FormData(document.querySelector('#productForm')),
     })
-    .then(response => refreshProducts())
+    .then(response => refreshProducts(), hideModal())
 
     document.getElementById("productForm").reset(); 
     document.querySelector("[data-modal-toggle='crudModal']").click();
